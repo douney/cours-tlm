@@ -1,5 +1,5 @@
 #include "ensitlm.h"
-#include "Generator.h"
+#include "generator.h"
 
 // #define DEBUG
 
