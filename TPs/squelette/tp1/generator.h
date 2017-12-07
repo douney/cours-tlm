@@ -1,6 +1,6 @@
 
-#ifndef MEMORY_H
-#define MEMORY_H
+#ifndef GENERATOR_H
+#define GENERATOR_H
 
 #include "ensitlm.h"
 

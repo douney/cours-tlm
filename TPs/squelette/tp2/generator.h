@@ -1,22 +1,17 @@
-#ifndef Generator_H
-#define Generator_H
+
+#ifndef GENERATOR_H
+#define GENERATOR_H
 
 #include "ensitlm.h"
 
-SC_MODULE(Generator) {
-	ensitlm::target_socket<Generator> target;
+struct Generator : sc_core::sc_module {
+	
+	sc_core::sc_in<bool> display_int;
+	ensitlm::initiator_socket<Generator> initiator;
+	void thread(void);
 
-
-	SC_HAS_PROCESS(Generator);
-	Generator(sc_core::sc_module_name name, unsigned int size);
-
-	~Generator();
-
-private:
-
-
-public:
-
+	SC_CTOR(Generator);
+	
 };
 
 #endif

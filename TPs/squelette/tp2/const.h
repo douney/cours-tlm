@@ -1,0 +1,4 @@
+
+
+#define MEMORY_SIZE 0x15400
+#define BUS_SIZE 0x15400 * 4
