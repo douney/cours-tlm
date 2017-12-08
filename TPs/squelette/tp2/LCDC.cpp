@@ -163,6 +163,10 @@ tlm::tlm_response_status LCDC::write(const ensitlm::addr_t &a,
 		if (int_register == 0)
 			display_int.write(false);
 		break;
+	case LCDC_START_REG:
+		if (d == 0x00000001)
+			this->started = true;
+		break;
 	default:
 		cerr << name() << ": Write access outside register range!"
 		     << endl;

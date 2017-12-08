@@ -1,4 +1,14 @@
 
 
 #define MEMORY_SIZE 0x15400
-#define BUS_SIZE 0x15400 * 4
+#define MEMORY_BASE 12
+
+#define LCD_REG_BASE 0
+#define LCD_REG_SIZE 12
+
+#define MEMORY_LCD_BASE 12
+#define MEMORY_LCD_SIZE 76800
+
+#define ROM_BASE 0x1540c
+
+#define IMG_SIZE_32 MEMORY_LCD_SIZE / 4
