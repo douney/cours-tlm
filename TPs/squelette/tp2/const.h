@@ -1,6 +1,8 @@
 
+#define WIDTH 320
+#define HEIGHT 240
 
-#define MEMORY_SIZE 0x15400
+#define MEMORY_SIZE WIDTH * HEIGHT + 10 * 1024
 #define MEMORY_BASE 12
 
 #define LCD_REG_BASE 0
