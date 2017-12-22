@@ -44,10 +44,13 @@ NativeWrapper * NativeWrapper::get_instance() {
 	return instance;
 }
 
-NativeWrapper::NativeWrapper(sc_core::sc_module_name name) : sc_module(name),
-							     irq("irq")
+NativeWrapper::NativeWrapper(sc_core::sc_module_name name) 
+	: sc_module(name)
+	, irq("irq")
+	, interupt(false)
 {
-	abort(); // TODO
+	SC_METHOD(interrupt_handler_internal);
+	sensitive << irq;
 }
 
 void NativeWrapper::hal_write32(unsigned int addr, unsigned int data)
@@ -62,12 +65,14 @@ unsigned int NativeWrapper::hal_read32(unsigned int addr)
 
 void NativeWrapper::hal_cpu_relax()
 {
-	abort(); // TODO
+	wait(1, SC_MS);
 }
 
 void NativeWrapper::hal_wait_for_irq()
 {
-	abort(); // TODO
+	if (!interrupt) 
+		wait(interrupt_event);
+	interrupt = false;
 }
 
 void NativeWrapper::compute()
@@ -77,5 +82,7 @@ void NativeWrapper::compute()
 
 void NativeWrapper::interrupt_handler_internal()
 {
-	abort(); // TODO
+	this->interrupt = true; 
+	interrupt_event.notify();
+	this->compute();
 }
