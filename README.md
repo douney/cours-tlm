@@ -1,3 +1,4 @@
+# GitHub de Félix ROBINET
 # Modélisation Transactionelle de Systèmes sur Puces
 
 Cours donné à l'[Ensimag](http://ensimag.grenoble-inp.fr/) par [Frédéric Pétrot](http://tima.imag.fr/sls/people/petrot/).
