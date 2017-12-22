@@ -52,12 +52,14 @@ NativeWrapper::NativeWrapper(sc_core::sc_module_name name) : sc_module(name),
 
 void NativeWrapper::hal_write32(unsigned int addr, unsigned int data)
 {
-	abort(); // TODO
+	socket.write(addr, data);
 }
 
 unsigned int NativeWrapper::hal_read32(unsigned int addr)
 {
-	abort(); // TODO
+	unsigned int data;
+	socket.read(addr, data);
+	return data;
 }
 
 void NativeWrapper::hal_cpu_relax()
