@@ -49,6 +49,7 @@ NativeWrapper::NativeWrapper(sc_core::sc_module_name name)
 	, irq("irq")
 	, interrupt(false)
 {
+	SC_THREAD(compute);
 	SC_METHOD(interrupt_handler_internal);
 	sensitive << irq;
 }
@@ -86,5 +87,5 @@ void NativeWrapper::interrupt_handler_internal()
 {
 	this->interrupt = true;
 	interrupt_event.notify();
-	this->compute();
+	interrupt_handler();
 }

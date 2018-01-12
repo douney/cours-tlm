@@ -236,6 +236,7 @@ int main() {
 
 		while (1) {
 			uint32_t d = hal_read32(GPIO_BASEADDR + GPIO_DATA_OFFSET);
+			hal_cpu_relax();
 			if (TEST_BIT(d, GPIO_BTN0)) {
 				break;
 			}
