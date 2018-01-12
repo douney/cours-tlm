@@ -36,9 +36,7 @@ void MBWrapper::exec_data_request(enum iss_t::DataAccessType mem_type,
 	tlm::tlm_response_status status;
 	switch (mem_type) {
 	case iss_t::READ_WORD: {
-		/* The ISS requested a data read
-		   (mem_addr into localbuf). */
-		abort(); // TODO
+		socket.read(addr, localbuf);
 #ifdef DEBUG
 		std::cout << hex << "read    " << setw(10) << localbuf
 		          << " at address " << mem_addr << std::endl;
@@ -57,9 +55,8 @@ void MBWrapper::exec_data_request(enum iss_t::DataAccessType mem_type,
 		// No cache => nothing to do.
 		break;
 	case iss_t::WRITE_WORD: {
-		/* The ISS requested a data write
-		   (mem_wdata at mem_addr). */
-		abort(); // TODO
+		socket.write(mem_addr, mem_wdata); // TODO histoire des endian
+
 #ifdef DEBUG
 		std::cout << hex << "wrote   " << setw(10) << mem_wdata
 		          << " at address " << mem_addr << std::endl;
@@ -86,11 +83,8 @@ void MBWrapper::run_iss(void) {
 			m_iss.getInstructionRequest(ins_asked, ins_addr);
 
 			if (ins_asked) {
-				/* The ISS requested an instruction.
-				 * We have to do the instruction fetch
-				 * by reading from memory. */
-				abort(); // TODO
 				uint32_t localbuf;
+				socket.read(ins_addr, localbuf);
 				m_iss.setInstruction(0, localbuf);
 			}
 
