@@ -44,7 +44,7 @@ NativeWrapper * NativeWrapper::get_instance() {
 	return instance;
 }
 
-NativeWrapper::NativeWrapper(sc_core::sc_module_name name) 
+NativeWrapper::NativeWrapper(sc_core::sc_module_name name)
 	: sc_module(name)
 	, irq("irq")
 	, interupt(false)
@@ -72,19 +72,19 @@ void NativeWrapper::hal_cpu_relax()
 
 void NativeWrapper::hal_wait_for_irq()
 {
-	if (!interrupt) 
+	if (!interrupt)
 		wait(interrupt_event);
 	interrupt = false;
 }
 
 void NativeWrapper::compute()
 {
-	abort(); // TODO
+	main();
 }
 
 void NativeWrapper::interrupt_handler_internal()
 {
-	this->interrupt = true; 
+	this->interrupt = true;
 	interrupt_event.notify();
 	this->compute();
 }
