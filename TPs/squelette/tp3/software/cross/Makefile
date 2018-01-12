@@ -24,17 +24,14 @@ dump.dis: $(EXEC)
 sections.txt: $(EXEC)
 	$(TARGET_READELF) -S $< > $@
 
+$(EXEC): $(OBJS)
+	$(TARGET_LD) -o $< -T ldscript
 
-$(EXEC): # TODO: dependencies
-	echo "Rule for linking not implemented."; exit 1
-# TODO: use $(TARGET_LD), and use the -T option to point to linker script ldscript
-
-main.o: # TODO: dependencies
-	echo "Rule for compilation not implemented"; exit 1
-# TODO: compile with target C compiler
+main.o: ../main.c  hal.h
+	$(TARGET_CC) $(INCLUDE) $< -o $@ -c
 
 %.o: %.s
-	echo "Rule for assembly not implemented"; exit 1
+	as -o $< $@
 
 .PHONY: clean realclean
 clean:
