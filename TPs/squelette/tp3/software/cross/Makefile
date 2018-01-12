@@ -24,14 +24,14 @@ dump.dis: $(EXEC)
 sections.txt: $(EXEC)
 	$(TARGET_READELF) -S $< > $@
 
-$(EXEC): $(OBJS)
-	$(TARGET_LD) -o $< -T ldscript
+$(EXEC): $(OBJS) ldscript
+	$(TARGET_LD) $(OBJS) -o $@ -T ldscript
 
 main.o: ../main.c  hal.h
-	$(TARGET_CC) $(INCLUDE) $< -o $@ -c
+	$(TARGET_CC) $(INCLUDE) -o main.o -c ../main.c
 
 %.o: %.s
-	as -o $< $@
+	$(TARGET_CC) -o $@ -c $<
 
 .PHONY: clean realclean
 clean:
