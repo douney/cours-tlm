@@ -47,7 +47,7 @@ NativeWrapper * NativeWrapper::get_instance() {
 NativeWrapper::NativeWrapper(sc_core::sc_module_name name)
 	: sc_module(name)
 	, irq("irq")
-	, interupt(false)
+	, interrupt(false)
 {
 	SC_METHOD(interrupt_handler_internal);
 	sensitive << irq;
@@ -67,7 +67,7 @@ unsigned int NativeWrapper::hal_read32(unsigned int addr)
 
 void NativeWrapper::hal_cpu_relax()
 {
-	wait(1, SC_MS);
+	wait(1, sc_core::SC_MS);
 }
 
 void NativeWrapper::hal_wait_for_irq()
