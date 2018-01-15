@@ -36,14 +36,19 @@ void MBWrapper::exec_data_request(enum iss_t::DataAccessType mem_type,
 	tlm::tlm_response_status status;
 	switch (mem_type) {
 	case iss_t::READ_WORD: {
-		initiator_socket.read(addr, localbuf);
+		socket.read(mem_addr, localbuf);
 #ifdef DEBUG
 		std::cout << hex << "read    " << setw(10) << localbuf
 		          << " at address " << mem_addr << std::endl;
 #endif
 		m_iss.setDataResponse(0, uint32_machine_to_be(localbuf));
 	} break;
-	case iss_t::READ_BYTE:
+	case iss_t::READ_BYTE: {
+		uint32_t i = mem_addr % 0x4;
+		uint32_t x = mem_addr - i;
+		localbuf = ((*(uint32_t *)x) >> (i * 8)) & 0xF;
+		m_iss.setDataResponse(0, uint32_machine_to_be(localbuf));
+	} break;
 	case iss_t::WRITE_HALF:
 	case iss_t::WRITE_BYTE:
 	case iss_t::READ_HALF:
@@ -55,7 +60,7 @@ void MBWrapper::exec_data_request(enum iss_t::DataAccessType mem_type,
 		// No cache => nothing to do.
 		break;
 	case iss_t::WRITE_WORD: {
-		initiator_socket.write(mem_addr, uint32_be_to_machine(mem_wdata));
+		socket.write(mem_addr, uint32_be_to_machine(mem_wdata));
 
 #ifdef DEBUG
 		std::cout << hex << "wrote   " << setw(10) << mem_wdata
@@ -84,7 +89,7 @@ void MBWrapper::run_iss(void) {
 
 			if (ins_asked) {
 				uint32_t localbuf;
-				initiator_socket.read(ins_addr, localbuf);
+				socket.read(ins_addr, localbuf);
 				m_iss.setInstruction(0, uint32_machine_to_be(localbuf));
 			}
 

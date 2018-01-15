@@ -24,5 +24,10 @@ SECTIONS
         } > bram
 
    /* TODO: find suitable address for stack, this one won't work */
-_stack_top  = 0xFFFFFFFC;
+      /*
+    La pile se trouve en haut de la mémoire
+    SRAM_BASEADDR + SRAM_SIZE - 1
+    0x20100000 + 0x00100000 - 0x1 = 0x201FFFFF
+    */
+_stack_top  = 0x10000;
 }

@@ -17,16 +17,13 @@
 
 
 /* Dummy implementation of abort(): invalid instruction */
-#define abort() do {				\
-	printf("abort() function called\r\n");  \
-	_hw_exception_handler();		\
-} while (0)
+#define abort() printf("error")
 
 /* TODO: implement HAL primitives for cross-compilation */
-#define hal_read32(a)      abort()
-#define hal_write32(a, d)  abort()
-#define hal_wait_for_irq() abort()
-#define hal_cpu_relax()    abort()
+#define hal_read32(a) *((uint32_t*)(a))
+#define hal_write32(a, d) *((uint32_t*)(a)) = d
+#define hal_wait_for_irq() while(irq_received == 0){} irq_received = 1
+#define hal_cpu_relax() abort()
 
 void microblaze_enable_interrupts(void) {
 	__asm("ori     r3, r0, 2\n"
@@ -34,6 +31,14 @@ void microblaze_enable_interrupts(void) {
 }
 
 /* TODO: printf is disabled, for now ... */
-#define printf(...) do {} while(0)
+#define printf(str) xprintf(str)
+
+void xprintf(char* str) {
+	char *c = str;
+	while(*c != '\0') {
+		*((uint8_t*)(UART_BASEADDR + UART_FIFO_WRITE)) = *c;
+		c++;
+	}
+}
 
 #endif /* HAL_H */
