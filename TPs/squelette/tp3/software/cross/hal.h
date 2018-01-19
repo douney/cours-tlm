@@ -31,15 +31,10 @@ void microblaze_enable_interrupts(void) {
 }
 
 /* TODO: printf is disabled, for now ... */
-#define printf(str) 	int i = 0; \
-	while(str[i] != '\0') { \
-		*((uint8_t*)(UART_BASEADDR + UART_FIFO_WRITE)) = str[i]; \
-		i++; \
-	}
+#define printf(str) \
+	do { xprintf(str); } while (0)
 
-
-
-void xprintf(char* str) {
+void xprintf(char *str) {
 	int i = 0;
 	while(str[i] != '\0') {
 		*((uint8_t*)(UART_BASEADDR + UART_FIFO_WRITE)) = str[i];

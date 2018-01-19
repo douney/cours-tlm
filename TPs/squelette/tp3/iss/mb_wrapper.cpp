@@ -45,8 +45,8 @@ void MBWrapper::exec_data_request(enum iss_t::DataAccessType mem_type,
 	} break;
 	case iss_t::READ_BYTE: {
 		uint32_t i = mem_addr % 0x4;
-		uint32_t x = mem_addr - i;
-		localbuf = ((*(uint32_t *)x) >> (i * 8)) & 0xF;
+		socket.read(mem_addr, localbuf);
+		localbuf = (localbuf >> (i * 8)) & 0xF;
 		m_iss.setDataResponse(0, uint32_machine_to_be(localbuf));
 	} break;
 	case iss_t::WRITE_HALF:
