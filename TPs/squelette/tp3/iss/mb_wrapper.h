@@ -19,11 +19,10 @@ struct MBWrapper : sc_core::sc_module {
 
 	void run_iss(void);
 	void interrupt_handler(void);
-	
+
 	SC_CTOR(MBWrapper);
 
 private:
-	int cpt;
 	bool interrupt;
 	typedef soclib::common::MicroBlazeIss iss_t;
 	void exec_data_request(enum iss_t::DataAccessType mem_type,

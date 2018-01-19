@@ -20,7 +20,6 @@ using namespace std;
 MBWrapper::MBWrapper(sc_core::sc_module_name name)
     : sc_core::sc_module(name), irq("irq"),
       m_iss(0) , /* identifier, not very useful since we have only one instance */
-      cpt(0) ,
       interrupt(false)
 {
 	m_iss.reset();
@@ -116,9 +115,9 @@ void MBWrapper::run_iss(void) {
 			m_iss.step();
             /* On compte 5 step pendant l'interruption */
             if (interrupt) {
-            	cpt++;
-            	if (cpt >= 5) {
-            		cpt = 0;
+            	inst_count++;
+            	if (inst_count >= 5) {
+            		inst_count = 0;
             		interrupt = false;
             		m_iss.setIrq(false);
             	}
