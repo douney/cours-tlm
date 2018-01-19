@@ -23,7 +23,7 @@
 #define hal_read32(a) *((uint32_t*)(a))
 #define hal_write32(a, d) *((uint32_t*)(a)) = d
 #define hal_wait_for_irq() while(irq_received == 0){} irq_received = 1
-#define hal_cpu_relax() abort()
+#define hal_cpu_relax() ;
 
 void microblaze_enable_interrupts(void) {
 	__asm("ori     r3, r0, 2\n"
@@ -31,13 +31,19 @@ void microblaze_enable_interrupts(void) {
 }
 
 /* TODO: printf is disabled, for now ... */
-#define printf(str) xprintf(str)
+#define printf(str) 	int i = 0; \
+	while(str[i] != '\0') { \
+		*((uint8_t*)(UART_BASEADDR + UART_FIFO_WRITE)) = str[i]; \
+		i++; \
+	}
+
+
 
 void xprintf(char* str) {
-	char *c = str;
-	while(*c != '\0') {
-		*((uint8_t*)(UART_BASEADDR + UART_FIFO_WRITE)) = *c;
-		c++;
+	int i = 0;
+	while(str[i] != '\0') {
+		*((uint8_t*)(UART_BASEADDR + UART_FIFO_WRITE)) = str[i];
+		i++;
 	}
 }
 
