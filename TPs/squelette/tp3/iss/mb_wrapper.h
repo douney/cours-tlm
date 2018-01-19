@@ -16,13 +16,15 @@
 struct MBWrapper : sc_core::sc_module {
 	ensitlm::initiator_socket<MBWrapper> socket;
 	sc_core::sc_in<bool> irq;
-
+	void interrupt_handler(void);
 	void run_iss(void);
         /* Add stuff relative to irq handling */
 
 	SC_CTOR(MBWrapper);
 
 private:
+	int cpt;
+	bool interrupt;
 	typedef soclib::common::MicroBlazeIss iss_t;
 	void exec_data_request(enum iss_t::DataAccessType mem_type,
 	                       uint32_t mem_addr, uint32_t mem_wdata);

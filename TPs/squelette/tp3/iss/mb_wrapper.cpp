@@ -19,11 +19,15 @@ using namespace std;
 
 MBWrapper::MBWrapper(sc_core::sc_module_name name)
     : sc_core::sc_module(name), irq("irq"),
-      m_iss(0) /* identifier, not very useful since we have only one instance */
+      m_iss(0) , /* identifier, not very useful since we have only one instance */
+      cpt(0) ,
+      interrupt(false)
 {
 	m_iss.reset();
 	m_iss.setIrq(false);
 	SC_THREAD(run_iss);
+	SC_METHOD(interrupt_handler);
+	sensitive << irq;
         /* The method that is needed to forward the interrupts from the SystemC
          * environment to the ISS need to be declared here */
 }
@@ -45,9 +49,10 @@ void MBWrapper::exec_data_request(enum iss_t::DataAccessType mem_type,
 	} break;
 	case iss_t::READ_BYTE: {
 		uint32_t i = mem_addr % 0x4;
-		socket.read(mem_addr, localbuf);
-		localbuf = (localbuf >> (i * 8)) & 0xF;
-		m_iss.setDataResponse(0, uint32_machine_to_be(localbuf));
+		socket.read(mem_addr - i, localbuf);
+		localbuf = uint32_machine_to_be(localbuf);
+		localbuf = (localbuf >> (i * 8)) & 0xFF;
+		m_iss.setDataResponse(0, localbuf);
 	} break;
 	case iss_t::WRITE_HALF:
 	case iss_t::WRITE_BYTE:
@@ -80,8 +85,9 @@ void MBWrapper::run_iss(void) {
 	int inst_count = 0;
 
 	while (true) {
-		if (m_iss.isBusy())
+		if (m_iss.isBusy()) {
 			m_iss.nullStep();
+		} 
 		else {
 			bool ins_asked;
 			uint32_t ins_addr;
@@ -104,10 +110,25 @@ void MBWrapper::run_iss(void) {
 				exec_data_request(mem_type, mem_addr,
 				                  mem_wdata);
 			}
+
 			m_iss.step();
-                        /* IRQ handling to be done */
+            /* IRQ handling to be done */
+            if (interrupt) {
+            	cpt++;
+            	if (cpt >= 5) {
+            		cpt = 0;
+            		interrupt = false;
+            		m_iss.setIrq(false);
+            	}
+            }
 		}
 
 		wait(PERIOD);
 	}
+}
+
+
+void MBWrapper::interrupt_handler(void) {
+	m_iss.setIrq(true);
+	interrupt = true;
 }
