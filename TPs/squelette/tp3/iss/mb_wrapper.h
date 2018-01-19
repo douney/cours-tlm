@@ -16,10 +16,10 @@
 struct MBWrapper : sc_core::sc_module {
 	ensitlm::initiator_socket<MBWrapper> socket;
 	sc_core::sc_in<bool> irq;
-	void interrupt_handler(void);
-	void run_iss(void);
-        /* Add stuff relative to irq handling */
 
+	void run_iss(void);
+	void interrupt_handler(void);
+	
 	SC_CTOR(MBWrapper);
 
 private:

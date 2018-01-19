@@ -48,9 +48,11 @@ void MBWrapper::exec_data_request(enum iss_t::DataAccessType mem_type,
 		m_iss.setDataResponse(0, uint32_machine_to_be(localbuf));
 	} break;
 	case iss_t::READ_BYTE: {
+    /* On lit l'adresse du début du mot */
 		uint32_t i = mem_addr % 0x4;
 		socket.read(mem_addr - i, localbuf);
 		localbuf = uint32_machine_to_be(localbuf);
+    /* On reprend la valeur de l'octet demandé */
 		localbuf = (localbuf >> (i * 8)) & 0xFF;
 		m_iss.setDataResponse(0, localbuf);
 	} break;
@@ -87,7 +89,7 @@ void MBWrapper::run_iss(void) {
 	while (true) {
 		if (m_iss.isBusy()) {
 			m_iss.nullStep();
-		} 
+		}
 		else {
 			bool ins_asked;
 			uint32_t ins_addr;
@@ -112,7 +114,7 @@ void MBWrapper::run_iss(void) {
 			}
 
 			m_iss.step();
-            /* IRQ handling to be done */
+            /* On compte 5 step pendant l'interruption */
             if (interrupt) {
             	cpt++;
             	if (cpt >= 5) {
